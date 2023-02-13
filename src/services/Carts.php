@@ -277,8 +277,16 @@ class Carts extends Component
         // get the order from the cart
         $order = Order::findOne($cart->orderId);
 
-        if (!$order) {
-            $error = Craft::t('app', 'Could not find Order for Abandoned Cart email.');
+        if (!$order || $order->isCompleted || !$order->hasLineItems()) {
+            if (!$order) {
+                $error = Craft::t('app', 'Could not find Order for Abandoned Cart email.');
+            }
+            if ($order->isCompleted) {
+                $error = Craft::t('app', 'Order for Abandoned Cart email is already completed.');
+            }
+            if (!$order->hasLineItems()) {
+                $error = Craft::t('app', 'Order for Abandoned Cart email has no line items.');
+            }
             Craft::error($error, __METHOD__);
             Craft::$app->language = $originalLanguage;
             $view->setTemplateMode($oldTemplateMode);

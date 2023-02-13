@@ -151,7 +151,7 @@ class Settings extends Model
             ], 'required'],
             ['restoreExpiryHours', 'integer', 'min' => 24, 'max' => '168'], // Atleast 24hrs
             ['firstReminderDelay', 'integer', 'min' => 1, 'max' => 24], // 1hr +
-            ['secondReminderDelay', 'integer', 'min' => 12, 'max' => 48], // prevent spam
+            ['secondReminderDelay', 'integer', 'min' => 12, 'max' => 720], // prevent spam
             [['firstReminderTemplate', 'secondReminderTemplate'], 'string'],
             [['firstReminderSubject', 'secondReminderSubject'], 'string'],
         ];
