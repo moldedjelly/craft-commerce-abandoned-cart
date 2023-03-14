@@ -285,4 +285,30 @@ class BaseController extends Controller
         return $this->asJson($results);
     }
 
+
+    public function actionSaveSettings()
+    {
+        if (Craft::$app->getUser()->checkPermission('abandoned-cart-manageAbandonedCartsSettings')) {
+            $this->requirePostRequest();
+            $settings = $this->request->getBodyParam('settings', []);
+            $plugin = Craft::$app->getPlugins()->getPlugin('abandoned-cart');
+
+            if (!Craft::$app->getPlugins()->savePluginSettings($plugin, $settings)) {
+                $this->setFailFlash(Craft::t('app', 'Couldn’t save plugin settings.'));
+
+                // Send the plugin back to the template
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'plugin' => $plugin,
+                ]);
+
+                return null;
+            }
+
+            $this->setSuccessFlash(Craft::t('app', 'Plugin settings saved.'));
+            return $this->redirectToPostedUrl();
+        } else {
+            throw new ForbiddenHttpException('User is not authorized to perform this action');
+        }
+    }
+
 }
